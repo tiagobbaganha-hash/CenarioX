@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import {
   ChevronRight,
   Clock,
@@ -14,6 +15,8 @@ import {
   ArrowUp,
   ArrowDown,
   ExternalLink,
+  MessageSquare,
+  CheckSquare,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -37,9 +40,13 @@ const market = {
   probabilityYes: 34,
   volume: "R$456.230",
   traders: 2100,
+  palpites: 48,
+  comments: 12,
   closesAt: "5 de Outubro, 2026",
   createdAt: "15 de Janeiro, 2025",
   isLive: true,
+  image: "/images/markets/politica-eleicao.jpg",
+  suggestedBy: "0xb79D...AeD1",
   resolutionSource: "Tribunal Superior Eleitoral (TSE)",
   resolutionCriteria:
     "Resultado oficial declarado pelo TSE apos a apuracao completa dos votos.",
@@ -135,13 +142,38 @@ export default function MarketDetailPage() {
           </div>
         </div>
 
+        {/* Hero banner image */}
+        <div className="relative w-full h-56 md:h-72 lg:h-80 overflow-hidden">
+          <Image
+            src={market.image || "/placeholder.svg"}
+            alt={market.title}
+            fill
+            className="object-cover"
+            sizes="100vw"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+          {/* Suggested by badge */}
+          <div className="absolute top-4 right-4">
+            <Badge variant="secondary" className="bg-background/80 backdrop-blur-sm text-xs">
+              Sugerido por {market.suggestedBy}
+            </Badge>
+          </div>
+          {/* Title overlay */}
+          <div className="absolute bottom-0 left-0 right-0 p-6 container mx-auto">
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground text-balance">
+              {market.title}
+            </h1>
+          </div>
+        </div>
+
         <div className="container mx-auto px-4 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left column - Market info */}
             <div className="lg:col-span-2 space-y-6">
-              {/* Market header */}
+              {/* Market header stats */}
               <div>
-                <div className="flex items-center gap-3 mb-3">
+                <div className="flex items-center gap-3 mb-4">
                   <Badge variant="secondary">{market.category}</Badge>
                   {market.isLive && (
                     <div className="flex items-center gap-1.5">
@@ -154,9 +186,28 @@ export default function MarketDetailPage() {
                   )}
                 </div>
 
-                <h1 className="text-2xl md:text-3xl font-bold mb-4 text-foreground text-balance">
-                  {market.title}
-                </h1>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4 max-w-2xl">
+                  {market.description}
+                </p>
+
+                {/* Stats row like the reference */}
+                <div className="flex flex-wrap items-center gap-6 mb-4 text-sm text-muted-foreground">
+                  <span className="flex items-center gap-1.5">
+                    <CheckSquare className="h-4 w-4" />
+                    <span className="text-foreground font-semibold">{market.palpites}</span> Palpites
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <MessageSquare className="h-4 w-4" />
+                    <span className="text-foreground font-semibold">{market.comments}</span> Comentarios
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <BarChart3 className="h-4 w-4" />
+                    Valor transacionado <span className="text-primary font-semibold font-mono">{market.volume}</span>
+                  </span>
+                  <Badge variant="outline" className="bg-transparent gap-1.5">
+                    <span className="font-semibold">{market.category}</span>
+                  </Badge>
+                </div>
 
                 {/* Probability display */}
                 <div className="flex items-center gap-6 mb-4">
@@ -192,10 +243,6 @@ export default function MarketDetailPage() {
 
                 {/* Meta row */}
                 <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                  <span className="flex items-center gap-1.5">
-                    <BarChart3 className="h-4 w-4" />
-                    {market.volume} volume
-                  </span>
                   <span className="flex items-center gap-1.5">
                     <Users className="h-4 w-4" />
                     {market.traders.toLocaleString()} traders

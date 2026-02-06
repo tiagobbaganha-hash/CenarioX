@@ -22,6 +22,7 @@ const featuredMarkets: Market[] = [
     volume: "R$456K",
     traders: "2.1K",
     closesAt: "Out 2026",
+    image: "/images/markets/politica-eleicao.jpg",
     isLive: true,
     isFeatured: true,
   },
@@ -35,6 +36,7 @@ const featuredMarkets: Market[] = [
     volume: "R$234K",
     traders: "1.8K",
     closesAt: "Dez 2026",
+    image: "/images/markets/bitcoin-150k.jpg",
     isLive: true,
   },
   {
@@ -47,6 +49,7 @@ const featuredMarkets: Market[] = [
     volume: "R$789K",
     traders: "4.2K",
     closesAt: "Jul 2026",
+    image: "/images/markets/brasil-copa.jpg",
     isLive: true,
   },
   {
@@ -59,6 +62,7 @@ const featuredMarkets: Market[] = [
     volume: "R$167K",
     traders: "987",
     closesAt: "Dez 2026",
+    image: "/images/markets/selic-economia.jpg",
     isLive: false,
   },
   {
@@ -71,6 +75,7 @@ const featuredMarkets: Market[] = [
     volume: "R$98K",
     traders: "654",
     closesAt: "Dez 2030",
+    image: "/images/markets/spacex-marte.jpg",
     isLive: false,
   },
   {
@@ -83,6 +88,7 @@ const featuredMarkets: Market[] = [
     volume: "R$312K",
     traders: "1.5K",
     closesAt: "Dez 2027",
+    image: "/images/markets/ia-agentes.jpg",
     isLive: true,
   },
 ]
@@ -98,6 +104,7 @@ const trendingMarkets: Market[] = [
     volume: "R$345K",
     traders: "3.1K",
     closesAt: "Nov 2026",
+    image: "/images/markets/flamengo-libertadores.jpg",
     isLive: true,
   },
   {
@@ -110,6 +117,7 @@ const trendingMarkets: Market[] = [
     volume: "R$523K",
     traders: "2.7K",
     closesAt: "Dez 2026",
+    image: "/images/markets/dolar-real.jpg",
     isLive: true,
   },
   {
@@ -122,6 +130,7 @@ const trendingMarkets: Market[] = [
     volume: "R$187K",
     traders: "1.2K",
     closesAt: "Dez 2026",
+    image: "/images/markets/ethereum-etf.jpg",
     isLive: false,
   },
   {
@@ -134,6 +143,7 @@ const trendingMarkets: Market[] = [
     volume: "R$89K",
     traders: "567",
     closesAt: "Dez 2026",
+    image: "/images/markets/reforma-tributaria.jpg",
     isLive: false,
   },
 ]
