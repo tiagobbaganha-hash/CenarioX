@@ -101,7 +101,7 @@ export function SiteFooter() {
         <Separator className="my-8" />
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
-          <p>2025 CenarioX. Todos os direitos reservados.</p>
+          <p>2026 CenarioX. Todos os direitos reservados.</p>
           <p>Mercados preditivos envolvem risco. Negocie com responsabilidade.</p>
         </div>
       </div>
