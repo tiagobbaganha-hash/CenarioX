@@ -9,6 +9,7 @@ import { HeroSection } from "@/components/hero-section"
 import { StatsBar } from "@/components/stats-bar"
 import { MarketCard } from "@/components/market-card"
 import { HowItWorks } from "@/components/how-it-works"
+import { ActivityTicker } from "@/components/activity-ticker"
 import type { Market } from "@/components/market-card"
 
 const featuredMarkets: Market[] = [
@@ -161,6 +162,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground relative">
       <AnimatedBackground />
+      <ActivityTicker />
       <SiteHeader />
 
       <main className="relative z-10">

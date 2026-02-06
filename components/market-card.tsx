@@ -14,6 +14,8 @@ export interface Market {
   category: string
   categoryColor: string
   probabilityYes: number
+  priceYes?: string
+  priceNo?: string
   volume: string
   traders: string
   closesAt: string
@@ -122,17 +124,19 @@ export function MarketCard({ market }: MarketCardProps) {
             <div className="flex gap-2 mb-3">
               <Button
                 size="sm"
-                className="flex-1 bg-success/15 text-success hover:bg-success hover:text-success-foreground border border-success/20 transition-all duration-200 font-semibold text-xs h-8"
+                className="flex-1 bg-success/15 text-success hover:bg-success hover:text-success-foreground border border-success/20 transition-all duration-200 font-semibold text-xs h-8 gap-1.5"
                 variant="outline"
               >
                 Sim
+                <span className="font-mono opacity-80">{market.priceYes ?? "R$0,50"}</span>
               </Button>
               <Button
                 size="sm"
-                className="flex-1 bg-destructive/15 text-destructive hover:bg-destructive hover:text-destructive-foreground border border-destructive/20 transition-all duration-200 font-semibold text-xs h-8"
+                className="flex-1 bg-destructive/15 text-destructive hover:bg-destructive hover:text-destructive-foreground border border-destructive/20 transition-all duration-200 font-semibold text-xs h-8 gap-1.5"
                 variant="outline"
               >
                 Nao
+                <span className="font-mono opacity-80">{market.priceNo ?? "R$0,50"}</span>
               </Button>
             </div>
 
