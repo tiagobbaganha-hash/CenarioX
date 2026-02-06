@@ -1,71 +1,50 @@
 "use client"
 
 import { useState } from "react"
-import { Search, X, Tag, Clock, Gamepad2 } from "lucide-react"
+import { Search, X, TrendingUp, Clock, BarChart3 } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import Image from "next/image"
 import Link from "next/link"
 
 export function SearchDialog() {
   const [isOpen, setIsOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
 
-  // Mock search results
   const searchResults = {
-    games: [
-      {
-        id: 1,
-        title: "Elden Ring",
-        image: "/placeholder.svg?height=100&width=200",
-        price: 59.99,
-        tags: ["Action RPG", "Open World"],
-      },
-      {
-        id: 2,
-        title: "Baldur's Gate 3",
-        image: "/placeholder.svg?height=100&width=200",
-        price: 59.99,
-        tags: ["RPG", "Fantasy"],
-      },
-      {
-        id: 3,
-        title: "Cyberpunk 2077",
-        image: "/placeholder.svg?height=100&width=200",
-        price: 29.99,
-        tags: ["RPG", "Open World"],
-      },
+    markets: [
+      { id: 1, title: "Lula sera reeleito em 2026?", probability: 34, category: "Politica", volume: "R$123K" },
+      { id: 2, title: "Bitcoin acima de $100K ate junho 2026?", probability: 62, category: "Crypto", volume: "R$89K" },
+      { id: 3, title: "Brasil vence a Copa do Mundo 2026?", probability: 18, category: "Esportes", volume: "R$456K" },
     ],
     categories: [
-      { id: 1, name: "Action RPG", count: 245 },
-      { id: 2, name: "Open World", count: 189 },
-      { id: 3, name: "Strategy", count: 156 },
+      { id: 1, name: "Politica", count: 42 },
+      { id: 2, name: "Crypto", count: 38 },
+      { id: 3, name: "Esportes", count: 31 },
     ],
     recent: [
-      { id: 1, title: "Starfield", image: "/placeholder.svg?height=100&width=200" },
-      { id: 2, title: "Counter-Strike 2", image: "/placeholder.svg?height=100&width=200" },
+      { id: 1, title: "Selic abaixo de 10% em 2026?" },
+      { id: 2, title: "SpaceX pousa em Marte ate 2030?" },
     ],
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="icon" className="text-zinc-400 hover:text-white">
+        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
           <Search className="h-5 w-5" />
-          <span className="sr-only">Search</span>
+          <span className="sr-only">Buscar mercados</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[800px] bg-zinc-900 border-zinc-800">
+      <DialogContent className="sm:max-w-[600px] bg-card border-border">
         <DialogHeader>
-          <DialogTitle className="sr-only">Search</DialogTitle>
+          <DialogTitle className="sr-only">Buscar</DialogTitle>
           <div className="relative">
-            <Search className="absolute left-3 top-3 h-5 w-5 text-zinc-400" />
+            <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
             <Input
-              placeholder="Search games, publishers, genres..."
-              className="pl-10 pr-10 py-6 text-lg bg-zinc-800 border-zinc-700 focus-visible:ring-emerald-500"
+              placeholder="Buscar mercados, categorias..."
+              className="pl-10 pr-10 py-6 text-lg bg-secondary border-border focus-visible:ring-primary"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               autoFocus
@@ -74,188 +53,93 @@ export function SearchDialog() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute right-2 top-2 text-zinc-400 hover:text-white"
+                className="absolute right-2 top-2 text-muted-foreground hover:text-foreground"
                 onClick={() => setSearchQuery("")}
               >
                 <X className="h-5 w-5" />
-                <span className="sr-only">Clear search</span>
+                <span className="sr-only">Limpar busca</span>
               </Button>
             )}
           </div>
         </DialogHeader>
 
-        <Tabs defaultValue="all" className="mt-2">
-          <TabsList className="bg-zinc-800 w-full grid grid-cols-3">
-            <TabsTrigger value="all">All Results</TabsTrigger>
-            <TabsTrigger value="games">Games</TabsTrigger>
-            <TabsTrigger value="categories">Categories</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="all" className="mt-4 space-y-6">
-            {/* Recent searches */}
-            {!searchQuery && (
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-medium text-zinc-400">Recent Searches</h3>
-                  <Button variant="link" className="text-emerald-400 p-0 h-auto">
-                    Clear
-                  </Button>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {searchResults.recent.map((item) => (
-                    <Link
-                      key={item.id}
-                      href="#"
-                      className="flex items-center gap-3 p-2 rounded-md hover:bg-zinc-800 transition"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <Clock className="h-4 w-4 text-zinc-400" />
-                      <span>{item.title}</span>
-                    </Link>
-                  ))}
-                </div>
+        <div className="mt-4 space-y-6">
+          {/* Recent searches */}
+          {!searchQuery && (
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-medium text-muted-foreground">Buscas Recentes</h3>
+                <Button variant="link" className="text-primary p-0 h-auto text-xs">Limpar</Button>
               </div>
-            )}
-
-            {/* Games */}
-            {searchQuery && (
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-medium text-zinc-400">Games</h3>
-                  <Button variant="link" className="text-emerald-400 p-0 h-auto">
-                    View All
-                  </Button>
-                </div>
-                <div className="space-y-3">
-                  {searchResults.games.map((game) => (
-                    <Link
-                      key={game.id}
-                      href="#"
-                      className="flex items-center gap-4 p-2 rounded-md hover:bg-zinc-800 transition"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <Image
-                        src={game.image || "/placeholder.svg"}
-                        alt={game.title}
-                        width={80}
-                        height={40}
-                        className="rounded-md object-cover w-20 h-12"
-                      />
-                      <div className="flex-1">
-                        <h4 className="font-medium">{game.title}</h4>
-                        <div className="flex items-center gap-2 mt-1">
-                          {game.tags.map((tag, index) => (
-                            <Badge key={index} variant="outline" className="text-xs border-zinc-700">
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                      <div className="font-bold">${game.price.toFixed(2)}</div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Categories */}
-            {searchQuery && (
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-medium text-zinc-400">Categories</h3>
-                  <Button variant="link" className="text-emerald-400 p-0 h-auto">
-                    View All
-                  </Button>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {searchResults.categories.map((category) => (
-                    <Link
-                      key={category.id}
-                      href="#"
-                      className="flex items-center justify-between p-2 rounded-md hover:bg-zinc-800 transition"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <div className="flex items-center gap-3">
-                        <Tag className="h-4 w-4 text-zinc-400" />
-                        <span>{category.name}</span>
-                      </div>
-                      <Badge variant="secondary" className="bg-zinc-700">
-                        {category.count}
-                      </Badge>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="games" className="mt-4">
-            {searchQuery ? (
-              <div className="space-y-3">
-                {searchResults.games.map((game) => (
+              <div className="space-y-2">
+                {searchResults.recent.map((item) => (
                   <Link
-                    key={game.id}
+                    key={item.id}
                     href="#"
-                    className="flex items-center gap-4 p-2 rounded-md hover:bg-zinc-800 transition"
+                    className="flex items-center gap-3 p-2 rounded-md hover:bg-accent transition-colors"
                     onClick={() => setIsOpen(false)}
                   >
-                    <Image
-                      src={game.image || "/placeholder.svg"}
-                      alt={game.title}
-                      width={80}
-                      height={40}
-                      className="rounded-md object-cover w-20 h-12"
-                    />
-                    <div className="flex-1">
-                      <h4 className="font-medium">{game.title}</h4>
-                      <div className="flex items-center gap-2 mt-1">
-                        {game.tags.map((tag, index) => (
-                          <Badge key={index} variant="outline" className="text-xs border-zinc-700">
-                            {tag}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="font-bold">${game.price.toFixed(2)}</div>
+                    <Clock className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm">{item.title}</span>
                   </Link>
                 ))}
               </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center py-12 text-zinc-400">
-                <Gamepad2 className="h-12 w-12 mb-4" />
-                <p>Enter a search term to find games</p>
-              </div>
-            )}
-          </TabsContent>
+            </div>
+          )}
 
-          <TabsContent value="categories" className="mt-4">
-            {searchQuery ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {/* Markets */}
+          {searchQuery && (
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-3">Mercados</h3>
+              <div className="space-y-2">
+                {searchResults.markets.map((market) => (
+                  <Link
+                    key={market.id}
+                    href="#"
+                    className="flex items-center gap-4 p-3 rounded-lg hover:bg-accent transition-colors"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-primary/10 shrink-0">
+                      <TrendingUp className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-sm font-medium truncate">{market.title}</h4>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <Badge variant="secondary" className="text-[10px]">{market.category}</Badge>
+                        <span className="text-xs text-muted-foreground flex items-center gap-1">
+                          <BarChart3 className="h-3 w-3" />
+                          {market.volume}
+                        </span>
+                      </div>
+                    </div>
+                    <span className="font-mono font-bold text-sm text-primary">{market.probability}%</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Categories */}
+          {searchQuery && (
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-3">Categorias</h3>
+              <div className="flex flex-wrap gap-2">
                 {searchResults.categories.map((category) => (
                   <Link
                     key={category.id}
                     href="#"
-                    className="flex items-center justify-between p-3 rounded-md hover:bg-zinc-800 transition"
                     onClick={() => setIsOpen(false)}
                   >
-                    <div className="flex items-center gap-3">
-                      <Tag className="h-4 w-4 text-zinc-400" />
-                      <span>{category.name}</span>
-                    </div>
-                    <Badge variant="secondary" className="bg-zinc-700">
-                      {category.count}
+                    <Badge variant="secondary" className="cursor-pointer hover:bg-accent transition-colors px-3 py-1.5">
+                      {category.name}
+                      <span className="ml-1.5 text-muted-foreground">{category.count}</span>
                     </Badge>
                   </Link>
                 ))}
               </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center py-12 text-zinc-400">
-                <Tag className="h-12 w-12 mb-4" />
-                <p>Enter a search term to find categories</p>
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
+            </div>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   )
