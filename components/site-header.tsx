@@ -1,17 +1,28 @@
 "use client"
 
 import Link from "next/link"
-import { TrendingUp, Bell, User } from "lucide-react"
+import { usePathname } from "next/navigation"
+import { TrendingUp, BarChart3, HelpCircle, Trophy, Info, Bell } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SearchDialog } from "@/components/search-dialog"
 import { MobileMenu } from "@/components/mobile-menu"
+import { cn } from "@/lib/utils"
+
+const navItems = [
+  { href: "/markets", label: "Mercados", icon: BarChart3 },
+  { href: "/#como-funciona", label: "Como Funciona", icon: HelpCircle },
+  { href: "/ranking", label: "Ranking", icon: Trophy },
+  { href: "/sobre", label: "Sobre", icon: Info },
+]
 
 export function SiteHeader() {
+  const pathname = usePathname()
+
   return (
     <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          {/* Logo + Nav */}
+          {/* Logo */}
           <div className="flex items-center gap-8">
             <Link href="/" className="flex items-center gap-2 group">
               <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-primary">
@@ -21,31 +32,27 @@ export function SiteHeader() {
                 CenarioX
               </span>
             </Link>
-            <nav className="hidden md:flex items-center gap-6">
-              <Link
-                href="/markets"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200"
-              >
-                Mercados
-              </Link>
-              <Link
-                href="#como-funciona"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200"
-              >
-                Como Funciona
-              </Link>
-              <Link
-                href="#"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200"
-              >
-                Ranking
-              </Link>
-              <Link
-                href="#"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-200"
-              >
-                Sobre
-              </Link>
+
+            {/* Desktop Nav */}
+            <nav className="hidden md:flex items-center gap-1">
+              {navItems.map((item) => {
+                const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href.replace("/#", "")))
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200",
+                      isActive
+                        ? "bg-primary/10 text-primary"
+                        : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                    )}
+                  >
+                    <item.icon className="h-4 w-4" />
+                    {item.label}
+                  </Link>
+                )
+              })}
             </nav>
           </div>
 

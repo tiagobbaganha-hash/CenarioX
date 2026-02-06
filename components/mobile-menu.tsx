@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Menu, TrendingUp, BarChart3, HelpCircle, Users, LogIn, UserPlus } from "lucide-react"
+import { Menu, TrendingUp, BarChart3, HelpCircle, Trophy, Info, LogIn, UserPlus, Users } from "lucide-react"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
@@ -29,30 +29,22 @@ export function MobileMenu() {
         </SheetHeader>
         <div className="overflow-y-auto h-full py-4">
           <div className="px-4 space-y-1">
-            <Link
-              href="/markets"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-foreground hover:bg-accent transition-colors"
-              onClick={() => setOpen(false)}
-            >
-              <BarChart3 className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm font-medium">Mercados</span>
-            </Link>
-            <Link
-              href="#como-funciona"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-              onClick={() => setOpen(false)}
-            >
-              <HelpCircle className="h-4 w-4" />
-              <span className="text-sm font-medium">Como Funciona</span>
-            </Link>
-            <Link
-              href="#"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-              onClick={() => setOpen(false)}
-            >
-              <Users className="h-4 w-4" />
-              <span className="text-sm font-medium">Ranking</span>
-            </Link>
+            {[
+              { href: "/markets", label: "Mercados", icon: BarChart3 },
+              { href: "/#como-funciona", label: "Como Funciona", icon: HelpCircle },
+              { href: "/ranking", label: "Ranking", icon: Trophy },
+              { href: "/sobre", label: "Sobre", icon: Info },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                onClick={() => setOpen(false)}
+              >
+                <item.icon className="h-4 w-4" />
+                <span className="text-sm font-medium">{item.label}</span>
+              </Link>
+            ))}
           </div>
 
           <Separator className="my-4" />
