@@ -1,0 +1,292 @@
+"use client"
+
+import React from "react"
+import { useState } from "react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useAuth } from "@/contexts/auth-context"
+import {
+  TrendingUp,
+  Eye,
+  EyeOff,
+  ArrowRight,
+  Loader2,
+  Check,
+} from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Separator } from "@/components/ui/separator"
+
+export default function RegisterPage() {
+  const [showPassword, setShowPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+  const [clickCount, setClickCount] = useState(0)
+  const { register } = useAuth()
+  const router = useRouter()
+
+  const handleTestClick = () => {
+    const newCount = clickCount + 1
+    setClickCount(newCount)
+    alert("FUNCIONOU! Clique numero " + newCount + " - Nome: " + name + " - Email: " + email)
+  }
+
+  const testDirectAPI = async () => {
+    alert('Testando API direta...')
+    try {
+      const response = await fetch('http://localhost:4000/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, name })
+      })
+      const data = await response.json()
+      alert('API FUNCIONOU! Resposta: ' + JSON.stringify(data))
+    } catch (err: any) {
+      alert('ERRO NA API: ' + err.message)
+    }
+  }
+
+  const testContext = async () => {
+    if (!name || !email || !password) {
+      alert("Preencha todos os campos!")
+      return
+    }
+    setIsLoading(true)
+    try {
+      await register(email, password, name)
+      alert("SUCESSO! Conta criada com contexto!")
+      router.push("/dashboard")
+    } catch (err: any) {
+      alert("ERRO: " + err.message)
+      setError(err.message)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const passwordChecks = [
+    { label: "Minimo 6 caracteres", met: password.length >= 6 },
+    { label: "Uma letra maiuscula", met: /[A-Z]/.test(password) },
+    { label: "Um numero", met: /\d/.test(password) },
+  ]
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setError("")
+    try {
+      await register(email, password, name)
+      router.push("/dashboard")
+    } catch (err: any) {
+      setError(err.message || "Erro ao criar conta")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-background flex">
+      <div className="hidden lg:flex lg:w-1/2 bg-card relative overflow-hidden border-r border-border">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10" />
+        <div className="relative z-10 flex flex-col justify-between p-12 w-full">
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="flex items-center justify-center h-9 w-9 rounded-lg bg-primary">
+              <TrendingUp className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <span className="font-bold text-xl tracking-tight text-foreground">
+              CenarioX
+            </span>
+          </Link>
+
+          <div className="max-w-md">
+            <h2 className="text-3xl font-bold mb-4 text-foreground text-balance">
+              Comece a negociar o futuro agora.
+            </h2>
+            <p className="text-muted-foreground leading-relaxed mb-8">
+              Crie sua conta gratuita e tenha acesso a mercados preditivos
+              exclusivos com dados em tempo real.
+            </p>
+
+            <div className="space-y-3">
+              {[
+                "Mercados preditivos com liquidez real",
+                "Analise e dados em tempo real",
+                "Comunidade ativa de traders",
+                "Suporte 24/7 em portugues",
+              ].map((feature) => (
+                <div key={feature} className="flex items-center gap-3">
+                  <div className="flex items-center justify-center h-5 w-5 rounded-full bg-primary/10">
+                    <Check className="h-3 w-3 text-primary" />
+                  </div>
+                  <span className="text-sm text-muted-foreground">{feature}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-8 text-sm text-muted-foreground">
+            <div>
+              <span className="block text-2xl font-bold font-mono text-foreground">12K+</span>
+              Traders ativos
+            </div>
+            <div>
+              <span className="block text-2xl font-bold font-mono text-foreground">R$2M+</span>
+              Volume total
+            </div>
+            <div>
+              <span className="block text-2xl font-bold font-mono text-foreground">150+</span>
+              Mercados
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex-1 flex items-center justify-center p-6">
+        <div className="w-full max-w-sm">
+          <div className="lg:hidden flex items-center justify-center gap-2 mb-8">
+            <Link href="/" className="flex items-center gap-2">
+              <div className="flex items-center justify-center h-9 w-9 rounded-lg bg-primary">
+                <TrendingUp className="h-5 w-5 text-primary-foreground" />
+              </div>
+              <span className="font-bold text-xl tracking-tight text-foreground">
+                CenarioX
+              </span>
+            </Link>
+          </div>
+
+          <div className="mb-4">
+            <h1 className="text-2xl font-bold mb-1 text-foreground">
+              Criar sua conta
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Preencha os dados abaixo para comecar a negociar.
+            </p>
+          </div>
+
+          <div className="mb-6 p-4 border-4 border-yellow-500 bg-yellow-50 dark:bg-yellow-900 rounded-lg space-y-3">
+            <p className="font-bold text-black dark:text-white text-center text-lg">AREA DE TESTES</p>
+            <p className="text-sm text-black dark:text-white text-center font-semibold">Cliques: {clickCount}</p>
+            
+            <button
+              type="button"
+              onClick={handleTestClick}
+              style={{ background: '#eab308', color: 'black', padding: '16px', borderRadius: '8px', fontWeight: 'bold', width: '100%', fontSize: '16px', border: 'none', cursor: 'pointer' }}
+            >
+              TESTE 1: CLIQUE AQUI ({clickCount})
+            </button>
+
+            <button
+              type="button"
+              onClick={testDirectAPI}
+              disabled={!name || !email || !password}
+              style={{ background: !name || !email || !password ? '#9ca3af' : '#06b6d4', color: 'white', padding: '16px', borderRadius: '8px', fontWeight: 'bold', width: '100%', fontSize: '16px', border: 'none', cursor: !name || !email || !password ? 'not-allowed' : 'pointer' }}
+            >
+              TESTE 2: API DIRETA
+            </button>
+
+            <button
+              type="button"
+              onClick={testContext}
+              disabled={!name || !email || !password}
+              style={{ background: !name || !email || !password ? '#9ca3af' : '#16a34a', color: 'white', padding: '16px', borderRadius: '8px', fontWeight: 'bold', width: '100%', fontSize: '16px', border: 'none', cursor: !name || !email || !password ? 'not-allowed' : 'pointer' }}
+            >
+              TESTE 3: COM CONTEXTO
+            </button>
+
+            <p className="text-xs text-gray-700 dark:text-gray-300 text-center">Clique no botao AMARELO primeiro!</p>
+          </div>
+
+          {error && (
+            <div className="mb-4 p-3 bg-red-100 border-2 border-red-400 rounded">
+              <p className="text-sm text-red-700 font-semibold">{error}</p>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <Label htmlFor="name">Nome completo</Label>
+              <Input
+                id="name"
+                type="text"
+                placeholder="Seu nome"
+                className="mt-1.5 bg-secondary"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="seu@email.com"
+                className="mt-1.5 bg-secondary"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="password">Senha</Label>
+              <div className="relative mt-1.5">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Senha forte"
+                  className="bg-secondary pr-10"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </Button>
+              </div>
+              {password && (
+                <div className="mt-2 space-y-1.5">
+                  {passwordChecks.map((check) => (
+                    <div key={check.label} className="flex items-center gap-2 text-xs">
+                      <div className={\`h-3.5 w-3.5 rounded-full flex items-center justify-center \${check.met ? "bg-green-500" : "bg-gray-300"}\`}>
+                        {check.met && <Check className="h-2.5 w-2.5 text-white" />}
+                      </div>
+                      <span className={check.met ? "text-green-600" : "text-gray-500"}>
+                        {check.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full h-11"
+              disabled={isLoading}
+            >
+              {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : (
+                <>Criar conta <ArrowRight className="h-4 w-4 ml-2" /></>
+              )}
+            </Button>
+          </form>
+
+          <p className="mt-4 text-xs text-center text-muted-foreground">
+            Ja tem uma conta? <Link href="/login" className="text-primary hover:underline">Entrar</Link>
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
