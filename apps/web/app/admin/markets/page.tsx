@@ -49,10 +49,26 @@ export default function AdminMarketsPage() {
     fetchMarkets()
   }, [])
 
+  async function proxyRequest(
+    endpoint: string,
+    method: string = "GET",
+    data?: Record<string, unknown>
+  ) {
+    return fetch("/api/proxy", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        endpoint,
+        method,
+        data,
+      }),
+    })
+  }
+
   async function fetchMarkets() {
     try {
       setLoading(true)
-      const response = await fetch('http://localhost:4000/markets')
+      const response = await proxyRequest("/markets", "GET")
       if (response.ok) {
         const data = await response.json()
         setMarkets(data)
@@ -67,10 +83,8 @@ export default function AdminMarketsPage() {
   async function handleResolve(marketId: string, resolution: 'yes' | 'no' | 'invalid') {
     try {
       setResolving(marketId)
-      const response = await fetch(\`http://localhost:4000/markets/\${marketId}/resolve\`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ resolution }),
+      const response = await proxyRequest(`/markets/${marketId}/resolve`, "POST", {
+        resolution,
       })
 
       if (response.ok) {
@@ -88,9 +102,7 @@ export default function AdminMarketsPage() {
 
   async function handleDelete(marketId: string) {
     try {
-      const response = await fetch(\`http://localhost:4000/markets/\${marketId}\`, {
-        method: 'DELETE',
-      })
+      const response = await proxyRequest(`/markets/${marketId}`, "DELETE")
 
       if (response.ok) {
         await fetchMarkets()
@@ -106,10 +118,8 @@ export default function AdminMarketsPage() {
 
   async function handleUpdateStatus(marketId: string, newStatus: string) {
     try {
-      const response = await fetch(\`http://localhost:4000/markets/\${marketId}\`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus }),
+      const response = await proxyRequest(`/markets/${marketId}`, "PATCH", {
+        status: newStatus,
       })
 
       if (response.ok) {
@@ -370,7 +380,7 @@ export default function AdminMarketsPage() {
                           )}
 
                           <Button asChild variant="outline" size="sm">
-                            <Link href={\`/markets/\${market.id}\`}>
+                            <Link href={`/markets/${market.id}`}>
                               Ver
                             </Link>
                           </Button>
