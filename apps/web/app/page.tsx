@@ -76,7 +76,7 @@ export default function HomePage() {
         })
 
         if (!response.ok) {
-          throw new Error(\`Erro ao buscar mercados: \${response.status}\`)
+          throw new Error(`Erro ao buscar mercados: ${response.status}`)
         }
 
         const data = await response.json()
@@ -235,7 +235,7 @@ export default function HomePage() {
               {categories.map((category) => (
                 <Link
                   key={category.name}
-                  href={\`/markets?category=\${category.name.toLowerCase()}\`}
+                  href={`/markets?category=${category.name.toLowerCase()}`}
                   className="group relative overflow-hidden rounded-lg border border-border bg-card/60 backdrop-blur-sm p-6 transition-all hover:border-primary/50 hover:bg-card/80"
                 >
                   <div className="flex flex-col items-center gap-3">
