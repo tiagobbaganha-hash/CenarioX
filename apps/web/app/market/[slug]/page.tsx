@@ -110,11 +110,11 @@ const probabilityHistory = [32, 35, 33, 38, 36, 34, 37, 35, 33, 31, 34, 36, 34]
 export default function MarketDetailPage() {
   const [buyAmount, setBuyAmount] = useState("")
   const [selectedSide, setSelectedSide] = useState<"yes" | "no">("yes")
-  const probabilityNo = 100 - market.probabilityYes
+  const probabilityNo = 100 - marketData.probabilityYes
 
   const potentialPayout = buyAmount
     ? selectedSide === "yes"
-      ? (Number.parseFloat(buyAmount) / (market.probabilityYes / 100)).toFixed(2)
+      ? (Number.parseFloat(buyAmount) / (marketData.probabilityYes / 100)).toFixed(2)
       : (Number.parseFloat(buyAmount) / (probabilityNo / 100)).toFixed(2)
     : "0.00"
 
@@ -136,7 +136,7 @@ export default function MarketDetailPage() {
               </Link>
               <ChevronRight className="h-3.5 w-3.5" />
               <span className="text-foreground font-medium truncate max-w-[200px]">
-                {market.category}
+                {marketData.category}
               </span>
             </nav>
           </div>
@@ -145,8 +145,8 @@ export default function MarketDetailPage() {
         {/* Hero banner image */}
         <div className="relative w-full h-56 md:h-72 lg:h-80 overflow-hidden">
           <Image
-            src={market.image || "/placeholder.svg"}
-            alt={market.title}
+            src={marketData.image || "/placeholder.svg"}
+            alt={marketData.title}
             fill
             className="object-cover"
             sizes="100vw"
@@ -156,13 +156,13 @@ export default function MarketDetailPage() {
           {/* Suggested by badge */}
           <div className="absolute top-4 right-4">
             <Badge variant="secondary" className="bg-background/80 backdrop-blur-sm text-xs">
-              Sugerido por {market.suggestedBy}
+              Sugerido por {marketData.suggestedBy}
             </Badge>
           </div>
           {/* Title overlay */}
           <div className="absolute bottom-0 left-0 right-0 p-6 container mx-auto">
             <h1 className="text-2xl md:text-3xl font-bold text-foreground text-balance">
-              {market.title}
+              {marketData.title}
             </h1>
           </div>
         </div>
@@ -174,8 +174,8 @@ export default function MarketDetailPage() {
               {/* Market header stats */}
               <div>
                 <div className="flex items-center gap-3 mb-4">
-                  <Badge variant="secondary">{market.category}</Badge>
-                  {market.isLive && (
+                  <Badge variant="secondary">{marketData.category}</Badge>
+                  {marketData.isLive && (
                     <div className="flex items-center gap-1.5">
                       <span className="relative flex h-2 w-2">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
@@ -187,25 +187,25 @@ export default function MarketDetailPage() {
                 </div>
 
                 <p className="text-sm text-muted-foreground leading-relaxed mb-4 max-w-2xl">
-                  {market.description}
+                  {marketData.description}
                 </p>
 
                 {/* Stats row like the reference */}
                 <div className="flex flex-wrap items-center gap-6 mb-4 text-sm text-muted-foreground">
                   <span className="flex items-center gap-1.5">
                     <CheckSquare className="h-4 w-4" />
-                    <span className="text-foreground font-semibold">{market.palpites}</span> Palpites
+                    <span className="text-foreground font-semibold">{marketData.palpites}</span> Palpites
                   </span>
                   <span className="flex items-center gap-1.5">
                     <MessageSquare className="h-4 w-4" />
-                    <span className="text-foreground font-semibold">{market.comments}</span> Comentarios
+                    <span className="text-foreground font-semibold">{marketData.comments}</span> Comentarios
                   </span>
                   <span className="flex items-center gap-1.5">
                     <BarChart3 className="h-4 w-4" />
-                    Valor transacionado <span className="text-primary font-semibold font-mono">{market.volume}</span>
+                    Valor transacionado <span className="text-primary font-semibold font-mono">{marketData.volume}</span>
                   </span>
                   <Badge variant="outline" className="bg-transparent gap-1.5">
-                    <span className="font-semibold">{market.category}</span>
+                    <span className="font-semibold">{marketData.category}</span>
                   </Badge>
                 </div>
 
@@ -213,7 +213,7 @@ export default function MarketDetailPage() {
                 <div className="flex items-center gap-6 mb-4">
                   <div>
                     <span className="text-4xl font-bold font-mono text-success">
-                      {market.probabilityYes}%
+                      {marketData.probabilityYes}%
                     </span>
                     <span className="text-sm text-muted-foreground ml-2">Sim</span>
                   </div>
@@ -230,7 +230,7 @@ export default function MarketDetailPage() {
                   <motion.div
                     className="h-full bg-success rounded-l-full"
                     initial={{ width: 0 }}
-                    animate={{ width: `${market.probabilityYes}%` }}
+                    animate={{ width: `${marketData.probabilityYes}%` }}
                     transition={{ duration: 1, ease: "easeOut" }}
                   />
                   <motion.div
@@ -245,11 +245,11 @@ export default function MarketDetailPage() {
                 <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                   <span className="flex items-center gap-1.5">
                     <Users className="h-4 w-4" />
-                    {market.traders.toLocaleString()} traders
+                    {marketData.traders.toLocaleString()} traders
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Clock className="h-4 w-4" />
-                    Fecha em {market.closesAt}
+                    Fecha em {marketData.closesAt}
                   </span>
                 </div>
 
@@ -492,7 +492,7 @@ export default function MarketDetailPage() {
                         Sim
                       </span>
                       <span className="text-xs text-muted-foreground font-mono">
-                        R${(market.probabilityYes / 100).toFixed(2)}
+                        R${(marketData.probabilityYes / 100).toFixed(2)}
                       </span>
                     </button>
                     <button
@@ -558,7 +558,7 @@ export default function MarketDetailPage() {
                       <span className="font-mono">
                         R$
                         {selectedSide === "yes"
-                          ? (market.probabilityYes / 100).toFixed(2)
+                          ? (marketData.probabilityYes / 100).toFixed(2)
                           : (probabilityNo / 100).toFixed(2)}
                       </span>
                     </div>
@@ -569,7 +569,7 @@ export default function MarketDetailPage() {
                           ? Math.floor(
                               Number.parseFloat(buyAmount) /
                                 (selectedSide === "yes"
-                                  ? market.probabilityYes / 100
+                                  ? marketData.probabilityYes / 100
                                   : probabilityNo / 100),
                             )
                           : 0}
@@ -621,7 +621,7 @@ export default function MarketDetailPage() {
                       Descricao
                     </h4>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      {market.description}
+                      {marketData.description}
                     </p>
                   </div>
 
@@ -630,16 +630,16 @@ export default function MarketDetailPage() {
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Criado em</span>
-                      <span>{market.createdAt}</span>
+                      <span>{marketData.createdAt}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Fecha em</span>
-                      <span>{market.closesAt}</span>
+                      <span>{marketData.closesAt}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Fonte de Resolucao</span>
                       <span className="text-right max-w-[180px]">
-                        {market.resolutionSource}
+                        {marketData.resolutionSource}
                       </span>
                     </div>
                   </div>
@@ -651,7 +651,7 @@ export default function MarketDetailPage() {
                       Criterio de Resolucao
                     </h4>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      {market.resolutionCriteria}
+                      {marketData.resolutionCriteria}
                     </p>
                   </div>
                 </CardContent>
