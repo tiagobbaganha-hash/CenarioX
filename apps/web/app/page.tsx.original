@@ -1,20 +1,18 @@
-"use client"
-
-import { useEffect, useState } from "react"
 import Link from "next/link"
-import { ArrowRight, TrendingUp, Flame, BarChart3 } from "lucide-react"
+import { ArrowRight, TrendingUp, Flame, Clock, BarChart3 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { AnimatedBackground } from "@/components/animated-background"
 import { HeroSection } from "@/components/hero-section"
 import { StatsBar } from "@/components/stats-bar"
-import { MarketCard, type Market } from "@/components/market-card"
+import { MarketCard } from "@/components/market-card"
 import { HowItWorks } from "@/components/how-it-works"
 import { ActivityTicker } from "@/components/activity-ticker"
+import type { Market } from "@/components/market-card"
 
-// Mock data as fallback
-const mockFeaturedMarkets: Market[] = [
+const featuredMarkets: Market[] = [
   {
     id: "1",
     slug: "lula-reeleito-2026",
@@ -25,6 +23,7 @@ const mockFeaturedMarkets: Market[] = [
     volume: "R$456K",
     traders: "2.1K",
     closesAt: "Out 2026",
+    image: "/images/markets/politica-eleicao.jpg",
     isLive: true,
     isFeatured: true,
   },
@@ -38,6 +37,7 @@ const mockFeaturedMarkets: Market[] = [
     volume: "R$234K",
     traders: "1.8K",
     closesAt: "Dez 2026",
+    image: "/images/markets/bitcoin-150k.jpg",
     isLive: true,
   },
   {
@@ -50,6 +50,7 @@ const mockFeaturedMarkets: Market[] = [
     volume: "R$789K",
     traders: "4.2K",
     closesAt: "Jul 2026",
+    image: "/images/markets/brasil-copa.jpg",
     isLive: true,
   },
   {
@@ -62,6 +63,7 @@ const mockFeaturedMarkets: Market[] = [
     volume: "R$167K",
     traders: "987",
     closesAt: "Dez 2026",
+    image: "/images/markets/selic-economia.jpg",
     isLive: false,
   },
   {
@@ -74,6 +76,7 @@ const mockFeaturedMarkets: Market[] = [
     volume: "R$98K",
     traders: "654",
     closesAt: "Dez 2030",
+    image: "/images/markets/spacex-marte.jpg",
     isLive: false,
   },
   {
@@ -86,11 +89,12 @@ const mockFeaturedMarkets: Market[] = [
     volume: "R$312K",
     traders: "1.5K",
     closesAt: "Dez 2027",
+    image: "/images/markets/ia-agentes.jpg",
     isLive: true,
   },
 ]
 
-const mockTrendingMarkets: Market[] = [
+const trendingMarkets: Market[] = [
   {
     id: "7",
     slug: "flamengo-libertadores-2026",
@@ -101,6 +105,7 @@ const mockTrendingMarkets: Market[] = [
     volume: "R$345K",
     traders: "3.1K",
     closesAt: "Nov 2026",
+    image: "/images/markets/flamengo-libertadores.jpg",
     isLive: true,
   },
   {
@@ -113,6 +118,7 @@ const mockTrendingMarkets: Market[] = [
     volume: "R$523K",
     traders: "2.7K",
     closesAt: "Dez 2026",
+    image: "/images/markets/dolar-real.jpg",
     isLive: true,
   },
   {
@@ -125,6 +131,7 @@ const mockTrendingMarkets: Market[] = [
     volume: "R$187K",
     traders: "1.2K",
     closesAt: "Dez 2026",
+    image: "/images/markets/ethereum-etf.jpg",
     isLive: false,
   },
   {
@@ -137,6 +144,7 @@ const mockTrendingMarkets: Market[] = [
     volume: "R$89K",
     traders: "567",
     closesAt: "Dez 2026",
+    image: "/images/markets/reforma-tributaria.jpg",
     isLive: false,
   },
 ]
@@ -150,154 +158,7 @@ const categories = [
   { name: "Entretenimento", count: 15, icon: "🎬" },
 ]
 
-type ApiMarket = {
-  id: string
-  title: string
-  description: string
-  category: string
-  status: string
-  yes_price: number
-  no_price: number
-  total_volume: number
-  liquidity: number
-  total_trades: number
-  closes_at: string
-  created_at: string
-}
-
-type MarketStats = {
-  total: number
-  active: number
-  closed: number
-  resolved: number
-  totalVolume: number
-  totalTrades: number
-}
-
-const formatCurrency = (value: number) =>
-  new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-    maximumFractionDigits: 2,
-  }).format(value)
-
-export default function HomePage() {
-  const [featuredMarkets, setFeaturedMarkets] = useState<Market[]>(mockFeaturedMarkets)
-  const [trendingMarkets, setTrendingMarkets] = useState<Market[]>(mockTrendingMarkets)
-  const [stats, setStats] = useState<any>(undefined)
-  const [loading, setLoading] = useState(false)
-
-  useEffect(() => {
-    const fetchMarkets = async () => {
-      try {
-        setLoading(true)
-
-        const response = await fetch("/api/proxy", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            endpoint: "/markets",
-            method: "GET",
-          }),
-        })
-
-        if (!response.ok) {
-          console.warn("API unavailable, using mock data")
-          return
-        }
-
-        const data = await response.json()
-        
-        if (!data.markets || data.markets.length === 0) {
-          console.log("No markets found, trying to seed...")
-          
-          const seedResponse = await fetch("/api/proxy", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              endpoint: "/markets/seed",
-              method: "POST",
-            }),
-          })
-
-          if (seedResponse.ok) {
-            const seedData = await seedResponse.json()
-            if (seedData.markets && seedData.markets.length > 0) {
-              updateMarketsFromAPI(seedData.markets)
-              setStats(seedData.stats || undefined)
-            }
-          }
-        } else {
-          updateMarketsFromAPI(data.markets)
-          setStats(data.stats || undefined)
-        }
-      } catch (err) {
-        console.warn("Error fetching markets, using mock data:", err)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchMarkets()
-  }, [])
-
-  const updateMarketsFromAPI = (apiMarkets: ApiMarket[]) => {
-    const convertedMarkets: Market[] = apiMarkets.map((market) => ({
-      id: market.id,
-      slug: market.id,
-      title: market.title,
-      category: market.category,
-      categoryColor: getCategoryColor(market.category),
-      probabilityYes: Math.round(market.yes_price * 100),
-      volume: formatCurrency(market.total_volume),
-      traders: market.total_trades.toString(),
-      closesAt: new Date(market.closes_at).toLocaleDateString("pt-BR"),
-      isLive: market.status === "active",
-    }))
-
-    setFeaturedMarkets(convertedMarkets.slice(0, 6))
-    if (convertedMarkets.length > 6) {
-      setTrendingMarkets(convertedMarkets.slice(6, 10))
-    }
-  }
-
-  const getCategoryColor = (category: string): string => {
-    const colors: Record<string, string> = {
-      "Politica": "bg-blue-500/10 text-blue-400",
-      "Esportes": "bg-green-500/10 text-green-400",
-      "Crypto": "bg-amber-500/10 text-amber-400",
-      "Economia": "bg-cyan-500/10 text-cyan-400",
-      "Tecnologia": "bg-purple-500/10 text-purple-400",
-      "Entretenimento": "bg-pink-500/10 text-pink-400",
-    }
-    return colors[category] || "bg-primary/10 text-primary"
-  }
-
-  const statsItems = stats
-    ? [
-        {
-          label: "Volume Negociado",
-          value: formatCurrency(stats.totalVolume),
-          suffix: "",
-        },
-        {
-          label: "Mercados Ativos",
-          value: stats.active.toLocaleString("pt-BR"),
-          suffix: "",
-        },
-        {
-          label: "Traders",
-          value: stats.totalTrades.toLocaleString("pt-BR"),
-          suffix: "",
-        },
-        {
-          label: "Taxa de Resolucao",
-          value: stats.total > 0 ? Math.round((stats.resolved / stats.total) * 100) : 0,
-          suffix: "%",
-        },
-      ]
-    : undefined
-
+export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground relative">
       <AnimatedBackground />
@@ -309,7 +170,7 @@ export default function HomePage() {
         <HeroSection />
 
         {/* Stats Bar */}
-        <StatsBar stats={statsItems} />
+        <StatsBar />
 
         {/* Featured Markets */}
         <section className="py-16">
@@ -357,8 +218,8 @@ export default function HomePage() {
               {categories.map((cat) => (
                 <Link
                   key={cat.name}
-                  href={`/markets?category=${cat.name.toLowerCase()}`}
-                  className="flex flex-col items-center justify-center p-5 rounded-xl bg-card border  border-border hover:border-primary/40 transition-all duration-200 group"
+                  href="#"
+                  className="flex flex-col items-center justify-center p-5 rounded-xl bg-card border border-border hover:border-primary/40 transition-all duration-200 group"
                 >
                   <span className="text-2xl mb-2" role="img" aria-label={cat.name}>{cat.icon}</span>
                   <span className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
